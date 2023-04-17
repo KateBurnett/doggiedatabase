@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Doggie Database</h1>
+    <h1 id="dogname"></h1>
+    <h2 id="temp"></h2>
+
+    <!-- Show all dogs  - working  -->
+    <form name="myForm4" action="" method="GET">
+      <h3>Show All Dogs</h3>
+      <input type="button" name="button" value="Show dogs" onClick="getDogs(this.form)">
+      <p id="database"></p>
+    </form>
+
+    <!-- Enter new dog  - working  -->
+    <form name="myForm1" action="" method="POST">
+      <h3>Add Dog</h3>
+      Dog name: <br>
+      <input type="text" name="name" value=""><br>
+      Dog age: <br>
+      <input type="text" name="age" value=""><br>
+      Dog breed: <br>
+      <input type="text" name="breed" value=""><br>
+      <br>
+      <input type="button" name="button" value="Add Dog" onClick="testResults(this.form)">
+    </form>
+   
+<!-- Delete dog  - not working  -->
+    <form name="myForm2" action="" method="DELETE">
+      <h3>Delete Dog</h3>
+      What is the id of the dog you would like to delete?: <br>
+      <input type="text" name="id" value=""><br>
+      <input type="button" name="button" value="Delete Dog" onClick="deleteDog(this.form)">
+    </form>
+
+<!-- Edit dog - unsure how to make this work   -->
+    <!-- <form name="myForm3" action="" method="POST">
+      <h3>Edit Dog</h3>
+      Dog name: <br>
+      <input type="text" name="name" value=""><br>
+      Dog age: <br>
+      <input type="text" name="age" value=""><br>
+      Dog breed: <br>
+      <input type="text" name="breed" value=""><br>
+      <br>
+      <input type="button" name="button" value="Add to Database" onClick="testResults(this.form)">
+    </form> -->
+
+
+    <script>
+
+// SHOW DOGS
+function getDogs (form) {
+  console.log("Show dogs button clicked")
+
+  var requestOptions = {
+  method: 'GET'
+};
+
+fetch("/doginfo", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+};
+
+
+// ADD DOG
+function testResults (form) {
+   var nameValue = form.name.value;
+   var ageValue = form.age.value;
+   var breedValue = form.breed.value;
+   var myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+var raw = JSON.stringify({
+  "name": form.name.value,
+  "age": form.age.value,
+  "breed": form.breed.value
+});
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: raw,
+  redirect: 'follow'
+};
+
+fetch("/doginfo", requestOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+}
+
+// DELETE DOG
+function deleteDog (form) {
+  console.log("delete button clicked");
+  console.log(form.id.value);
+  var idValue = form.id.value;
+
+  const remove = (idValue) => {
+    for (let i = 0; i < database.length; i++) {
+    if(idValue==database[i].id){
+      database.splice(i, 1)
+     }
+    }
+    return newDatabase
+    console.log(__________________)
+    console.log(database)
+    console.log(__________________)
+  };
+
+  var responseOptions = {
+    method: 'DELETE',
+    body: remove,
+  };
+
+  fetch("doginfo/:id", responseOptions)
+  .then(response => response.text())
+  .then(result => console.log(result))
+  .catch(error => console.log('error', error));
+};
+
+
+        // fetch("/doginfo/1234", {
+        //     method: "GET", // *GET, POST, PUT, DELETE, etc.
+        //     mode: "cors", // no-cors, *cors, same-origin
+        //     cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        //     credentials: "same-origin", // include, *same-origin, omit
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         'Content-Type': 'application/x-www-form-urlencoded',
+        //     },
+        //     redirect: "follow", // manual, *follow, error
+        //     referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        //     body: JSON.stringify({social:545-87-7866, personName:"Erin", income:125000}), // body data type must match "Content-Type" header
+        // })
+        //     .then(data => {
+        //         console.log("---------")
+        //         console.log(data)
+        //         console.log("---------")
+        //         return data.json()
+        //     })
+        //     .then(data => {
+        //         console.log("inside fetch route")
+        //         console.log(data)
+        //     })
+
+//         var myHeaders = new Headers();
+// myHeaders.append("Content-Type",'application/x-www-form-urlencoded');
+
+// var raw = JSON.stringify({
+//   "data": {
+//     "item_name": "dust ruffle",
+//     "brand": "Ethan Allen",
+//     "price": 75,
+//     "color": "purple",
+//     "description": "900 thread count dust ruffle"
+//   }
+// });
+
+var requestOptions = {
+  method: 'GET',
+//   headers: myHeaders,
+  // body: raw,
+  redirect: 'follow'
+};
+//https://api.chucknorris.io/jokes/random
+fetch("/doginfo/123456", requestOptions)
+  .then(response => response.json())
+  .then(result => {
+    console.log("----------")
+    console.log(result)
+    console.log("----------")
+    document.getElementById("dogname").innerHTML = result.dogData.name
+    document.getElementById("temp").innerHTML = result.temp
+  })
+  .catch(error => console.log('error', error));
+    </script>
+</body>
+
+</html>
