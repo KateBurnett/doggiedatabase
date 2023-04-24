@@ -81,7 +81,7 @@ app.delete("/doginfo/:id", (req, res)=>{
 //------------------------------
 //TODO: Write an API route that will recieve a request and add one year to the dogs age
 //------------------------------
-app.post("/doginfo/:id", (req, res)=>{
+app.put("/doginfo/:id", (req, res)=>{
   console.log(req.params.id)
   for (let i = 0; i < database.length; i++) {
     if(req.params.id==database[i].id){
