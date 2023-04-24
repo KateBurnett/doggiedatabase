@@ -1,7 +1,7 @@
 const express = require('express')
 const path = require("path")
 const app = express()
-//require('dotenv').config()
+require('dotenv').config()
 var bodyParser = require('body-parser');
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -16,17 +16,18 @@ const PORT = process.env.PORT || 3000
 //UD
 //I/O
 
-var middleware = function(req, res, next){
-console.log("inside middleware")
-    next()
+// var middleware = function(req, res, next){
+// console.log("inside middleware")
+//     next()
 
-}
+// }
 
 var database = [
   {name:"Runa", age:4, breed:"bulldog", id:1234},
   {name:"Hunter", age:6, breed:"yorkshire", id:12345},
   {name:"Skadi", age:2, breed:"bulldog", id:123456},
-  {name:"Odie", age:4, breed:"pit", id:1234567}
+  {name:"Odie", age:4, breed:"pit", id:1234567},
+  {name:"Buster", age:6, breed:"minpin", id:234567}
 ]
 
 
@@ -35,15 +36,20 @@ function addWeightToDog(req, res, next){
   next()
 }
 
-app.use(middleware)
+// app.use(middleware)
 
 app.get("/home", (req, res)=>{
   // console.log(req)
   res.sendFile(path.join(__dirname, 'index.html'))
 })
 
-app.get("/doginfo", (req, res)=>{
-  console.log(req)
+app.get("/aboutus", (req, res)=>{
+  // console.log(req)
+  res.sendFile(path.join(__dirname, 'aboutus.html'))
+})
+
+app.get("/getalldogs", (req, res)=>{
+  // console.log(req)
   res.json(database)
 })
 
@@ -72,18 +78,40 @@ app.delete("/doginfo/:id", (req, res)=>{
   }
   res.json(database)
 })
-
-app.put("/doginfo/:id", (req, res)=>{
+//------------------------------
+//TODO: Write an API route that will recieve a request and add one year to the dogs age
+//------------------------------
+app.post("/doginfo/:id", (req, res)=>{
+  console.log(req.params.id)
   for (let i = 0; i < database.length; i++) {
     if(req.params.id==database[i].id){
-      database[i].caretaker = req.body.caretaker
+      database[i].age = database[i].age + 1
     }
   }
   res.json(database)
 })
 
 
-app.get('/doginfo/:id', middleware, async function (req, res) {
+app.put("/doginfo/:id", (req, res)=>{
+  // var database = [
+  //   {name:"Runa", age:4, breed:"bulldog", id:1234},
+  //   {name:"Hunter", age:6, breed:"yorkshire", id:12345},
+  //   {name:"Skadi", age:2, breed:"bulldog", id:123456},
+  //   {name:"Odie", age:4, breed:"pit", id:1234567}
+  // ]
+  console.log("%%%%%%%%%%%%%%%")
+  console.log(req.body.occupiedShelter)
+  console.log("%%%%%%%%%%%%%%%")
+  for (let i = 0; i < database.length; i++) {
+    if(req.params.id==database[i].id){
+      database[i].interest = database[i].interest.push("somethingelse")
+    }
+  }
+  res.json(database)
+})
+
+
+app.get('/doginfo/:id', async function (req, res) {
   var selectedDog = {}
 
   var data = await fetch("https://api.openweathermap.org/data/2.5/weather?lat=35.1065&lon=-106.6060&appid=6cba9d01ef70f28fac514fe4db61ef58")
